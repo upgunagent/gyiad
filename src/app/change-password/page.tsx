@@ -64,7 +64,7 @@ function ChangePasswordContent() {
         <div className="flex h-screen bg-gray-50">
             <Sidebar />
 
-            <main className="flex-1 ml-72 overflow-y-auto">
+            <main className="flex-1 ml-0 md:ml-72 overflow-y-auto transition-all duration-300">
                 <div className="max-w-2xl mx-auto p-8">
                     <div className="mb-6">
                         <Link

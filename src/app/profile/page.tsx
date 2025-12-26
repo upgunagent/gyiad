@@ -49,7 +49,7 @@ export default async function ProfilePage() {
             {/* Sidebar */}
             <Sidebar />
             {/* Main Content */}
-            <main className="flex-1 ml-72 overflow-y-auto">
+            <main className="flex-1 ml-0 md:ml-72 overflow-y-auto transition-all duration-300">
                 <div className="max-w-7xl mx-auto pb-12">
                     {/* Header Spacer */}
                     <div className="h-6"></div>

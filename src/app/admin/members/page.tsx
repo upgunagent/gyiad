@@ -64,27 +64,7 @@ export default function AdminMembersPage() {
         }
     };
 
-    const handleSyncMissing = async () => {
-        if (!confirm('Members tablosunda olmayan Auth kullanıcıları senkronize edilecek. Devam edilsin mi?')) return;
-
-        setIsLoading(true);
-        try {
-            const res = await fetch('/api/sync-missing');
-            const data = await res.json();
-            if (data.success) {
-                const syncedCount = data.results.filter((r: any) => r.status === 'synced').length;
-                alert(`${syncedCount} eksik üye başarıyla senkronize edildi.`);
-                loadMembers();
-            } else {
-                throw new Error(data.error);
-            }
-        } catch (error: any) {
-            alert('Senkronizasyon hatası: ' + error.message);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
+    // function removed
 
     const filteredMembers = members.filter(m => {
         // Search filter
@@ -109,14 +89,6 @@ export default function AdminMembersPage() {
                     <p className="text-gray-500">Tüm üyeleri görüntüleyin, düzenleyin veya silin.</p>
                 </div>
                 <div className="flex gap-3">
-                    <button
-                        onClick={handleSyncMissing}
-                        disabled={isLoading}
-                        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 text-sm font-medium"
-                    >
-                        <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                        Eksikleri Eşitle
-                    </button>
                     <Link
                         href="/admin/members/new"
                         className="flex items-center gap-2 px-4 py-2 bg-[#0099CC] text-white rounded-lg hover:bg-[#007aa3] transition-colors text-sm font-medium shadow-sm"
@@ -175,9 +147,95 @@ export default function AdminMembersPage() {
                     </div>
                 </div>
 
-                {/* Table */}
+                {/* Content - Responsive Table/Cards */}
                 <div className="overflow-x-auto">
-                    <table className="w-full text-left">
+                    {/* Mobile Card View */}
+                    <div className="md:hidden space-y-4 p-4 bg-gray-50">
+                        {isLoading ? (
+                            <div className="text-center text-gray-500 py-8">Yükleniyor...</div>
+                        ) : filteredMembers.length === 0 ? (
+                            <div className="text-center text-gray-500 py-8">Kayıt bulunamadı.</div>
+                        ) : (
+                            filteredMembers.map((member) => (
+                                <div key={member.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex flex-col gap-3">
+
+                                    {/* Header: Avatar, Name, Email, Actions */}
+                                    <div className="flex justify-between items-start">
+                                        <div className="flex items-center gap-3">
+                                            {member.avatar_url ? (
+                                                <img src={member.avatar_url} alt="" className="w-12 h-12 rounded-full object-cover" />
+                                            ) : (
+                                                <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-medium text-lg">
+                                                    {member.full_name?.charAt(0)}
+                                                </div>
+                                            )}
+                                            <div>
+                                                <div className="font-bold text-gray-900">{member.full_name}</div>
+                                                <div className="text-sm text-gray-500 break-all">{member.email}</div>
+                                            </div>
+                                        </div>
+
+                                        {/* Actions Menu (Compact) */}
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={() => handleRequestUpdate(member.id, member.email)}
+                                                className="p-2 text-gray-400 hover:text-orange-600 rounded-lg hover:bg-orange-50"
+                                                title="Hatırlatma Gönder"
+                                            >
+                                                <RefreshCw className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => router.push(`/admin/members/${member.id}/edit`)}
+                                                className="p-2 text-gray-400 hover:text-blue-600 rounded-lg hover:bg-blue-50"
+                                                title="Düzenle"
+                                            >
+                                                <Pencil className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(member.id)}
+                                                className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50"
+                                                title="Sil"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <hr className="border-gray-100" />
+
+                                    {/* Company & Status */}
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase font-bold mb-1">Şirket / Pozisyon</div>
+                                            <div className="text-sm font-medium text-gray-900">{member.company_name}</div>
+                                            <div className="text-xs text-gray-500">{member.position}</div>
+                                        </div>
+                                        <div>
+                                            <div className="text-xs text-gray-500 uppercase font-bold mb-1">Durum</div>
+                                            <Badge type={member.member_type}>{formatMemberType(member.member_type)}</Badge>
+                                        </div>
+                                    </div>
+
+                                    {/* Roles */}
+                                    {member.board_roles && member.board_roles.length > 0 && (
+                                        <div className="bg-gray-50 p-2 rounded-lg">
+                                            <div className="text-xs text-gray-500 uppercase font-bold mb-1">Roller</div>
+                                            <div className="flex flex-wrap gap-1">
+                                                {member.board_roles.map(r => (
+                                                    <span key={r} className="text-xs bg-white text-gray-600 px-2 py-0.5 rounded border border-gray-200 shadow-sm">
+                                                        {formatRole(r)}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))
+                        )}
+                    </div>
+
+                    {/* Desktop Table View */}
+                    <table className="hidden md:table w-full text-left">
                         <thead className="bg-gray-50 text-gray-600 font-medium">
                             <tr>
                                 <th className="px-6 py-4">Üye Bilgisi</th>
@@ -190,11 +248,11 @@ export default function AdminMembersPage() {
                         <tbody className="divide-y divide-gray-200">
                             {isLoading ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-8 text-center text-gray-500">Yükleniyor...</td>
+                                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">Yükleniyor...</td>
                                 </tr>
                             ) : filteredMembers.length === 0 ? (
                                 <tr>
-                                    <td colSpan={4} className="px-6 py-8 text-center text-gray-500">Kayıt bulunamadı.</td>
+                                    <td colSpan={5} className="px-6 py-8 text-center text-gray-500">Kayıt bulunamadı.</td>
                                 </tr>
                             ) : (
                                 filteredMembers.map((member) => (

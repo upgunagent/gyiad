@@ -81,7 +81,7 @@ function RequestsPage() {
     return (
         <div className="flex h-screen bg-gray-50 font-sans">
             <Sidebar />
-            <main className="flex-1 ml-72 p-8 md:p-12 overflow-y-auto">
+            <main className="flex-1 ml-0 md:ml-72 p-4 md:p-12 overflow-y-auto transition-all duration-300">
                 <div className="max-w-4xl mx-auto">
 
                     <h1 className="text-2xl font-bold text-gray-900 mb-2">Dilek ve Talepler</h1>

@@ -111,7 +111,16 @@ export default function LoginPage() {
             <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-[#0099CC]">
                 <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl border border-white/20">
                     <div className="text-center mb-8">
-                        {/* Mobile Logo would go here if needed */}
+                        {/* Mobile Logo */}
+                        <div className="lg:hidden flex justify-center mb-6">
+                            <Image
+                                src="/logo.png"
+                                alt="GYİAD Logo"
+                                width={120}
+                                height={120}
+                                className="h-20 w-auto object-contain bg-white rounded-lg p-2"
+                            />
+                        </div>
                         <h2 className="text-2xl font-bold text-gray-900">Giriş Yap</h2>
                         <p className="text-sm text-gray-500 mt-2">Hesabınıza erişmek için bilgilerinizi giriniz</p>
                     </div>

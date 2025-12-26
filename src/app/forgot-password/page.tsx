@@ -78,6 +78,16 @@ export default function ForgotPasswordPage() {
                     </Link>
 
                     <div className="text-center mb-8">
+                        {/* Mobile Logo */}
+                        <div className="lg:hidden flex justify-center mb-6">
+                            <Image
+                                src="/logo.png"
+                                alt="GYİAD Logo"
+                                width={120}
+                                height={120}
+                                className="h-20 w-auto object-contain bg-white rounded-lg p-2"
+                            />
+                        </div>
                         <h2 className="text-2xl font-bold text-gray-900">Şifremi Unuttum</h2>
                         <p className="text-sm text-gray-500 mt-2">
                             {success ? 'E-posta gönderildi!' : 'E-posta adresinizi girin'}

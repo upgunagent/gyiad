@@ -2,13 +2,10 @@
 
 import {
     Users,
-    Home,
-    Settings,
-    LogOut,
     Menu,
     X,
     UserPlus,
-    LayoutDashboard,
+    LogOut,
     KeyRound,
     MessageSquare
 } from 'lucide-react';
@@ -35,8 +32,13 @@ function NavItem({ icon: Icon, label, href, active }: { icon: any, label: string
 export default function AdminSidebar() {
     const pathname = usePathname();
     const router = useRouter();
-    const [isOpen, setIsOpen] = useState(true);
+    const [isOpen, setIsOpen] = useState(false); // Default closed on mobile
     const [userName, setUserName] = useState('Admin');
+
+    // Close sidebar on route change (mobile)
+    useEffect(() => {
+        setIsOpen(false);
+    }, [pathname]);
 
     useEffect(() => {
         async function loadUser() {
@@ -57,17 +59,26 @@ export default function AdminSidebar() {
 
     return (
         <>
-            {/* Mobile Toggle */}
+            {/* Mobile Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="lg:hidden fixed top-4 left-4 z-50 p-2 bg-white rounded-md shadow-md"
+                className="lg:hidden fixed top-4 left-4 z-[60] p-2 bg-white rounded-md shadow-md text-gray-600 hover:text-[#0099CC] transition-colors"
+                aria-label="Toggle Menu"
             >
-                {isOpen ? <X /> : <Menu />}
+                {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
+
+            {/* Backdrop for Mobile */}
+            {isOpen && (
+                <div
+                    className="fixed inset-0 z-40 bg-black/50 lg:hidden backdrop-blur-sm"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
 
             {/* Sidebar */}
             <aside className={clsx(
-                "fixed top-0 left-0 z-40 h-screen w-72 bg-white border-r border-gray-100 transition-transform duration-300 flex flex-col",
+                "fixed inset-y-0 left-0 z-50 w-72 bg-white border-r border-gray-100 flex flex-col shadow-xl lg:shadow-none transition-transform duration-300 ease-in-out",
                 isOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
             )}>
                 {/* Header */}
@@ -87,7 +98,6 @@ export default function AdminSidebar() {
                 {/* Navigation */}
                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
                     <div className="text-xs font-bold text-gray-400 uppercase tracking-wider px-3 mb-2 mt-4">Yönetim</div>
-                    {/* Dashboard Removed */}
 
                     <NavItem
                         icon={Users}
@@ -107,12 +117,10 @@ export default function AdminSidebar() {
                         href="/admin/requests"
                         active={pathname === '/admin/requests'}
                     />
-
-                    {/* Settings Removed */}
                 </nav>
 
                 {/* Footer */}
-                <div className="p-4 border-t border-gray-50">
+                <div className="p-4 border-t border-gray-50 bg-gray-50/50">
                     {/* User Name - Clickable for Password Change */}
                     <Link
                         href="/admin/change-password"
@@ -138,3 +146,4 @@ export default function AdminSidebar() {
         </>
     );
 }
+
