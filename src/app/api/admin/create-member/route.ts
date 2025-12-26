@@ -89,7 +89,7 @@ export async function POST(request: Request) {
                         </div>
 
                         <div style="text-align: center; margin: 30px 0;">
-                            <a href="${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/login" 
+                            <a href="https://gyiad.vercel.app/login" 
                                style="background: #0099CC; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
                                 Giriş Yap
                             </a>

@@ -74,7 +74,7 @@ export async function POST(request: Request) {
             </div>
             `,
             'Profilimi Güncelle',
-            `${process.env.NEXT_PUBLIC_SITE_URL}/profile/edit`
+            `https://gyiad.vercel.app/login`
         );
 
         // Send Email

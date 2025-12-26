@@ -66,7 +66,7 @@ export async function POST(request: Request) {
                 </div>
                 `,
                 'Admin Paneline Git',
-                `${process.env.NEXT_PUBLIC_SITE_URL}/admin/requests`
+                `https://gyiad.vercel.app/login`
             );
 
             await resend.emails.send({

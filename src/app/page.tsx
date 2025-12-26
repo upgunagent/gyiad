@@ -66,17 +66,11 @@ function Dashboard() {
         result = result.filter(m => m.board_roles?.includes('president'));
         break;
       case 'executive':
-        // Executive Board: President OR Vice President
-        result = result.filter(m =>
-          m.board_roles?.includes('president') ||
-          m.board_roles?.includes('vice_president') ||
-          m.board_roles?.includes('executive_board') // In case explicit role is used
-        );
+        // Executive Board: Only explicit 'executive_board' role
+        result = result.filter(m => m.board_roles?.includes('executive_board'));
         break;
       case 'board_all': // All Board Members
         result = result.filter(m =>
-          m.board_roles?.includes('president') ||
-          m.board_roles?.includes('vice_president') ||
           m.board_roles?.includes('board_member') ||
           m.board_roles?.includes('board_reserve')
         );
