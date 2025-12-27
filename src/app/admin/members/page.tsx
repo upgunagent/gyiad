@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, RefreshCw } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, RefreshCw, Eye } from 'lucide-react';
 import { memberService, DbMember } from '@/services/memberService';
 import { useRouter } from 'next/navigation';
 
@@ -178,6 +178,13 @@ export default function AdminMembersPage() {
                                         {/* Actions Menu (Compact) */}
                                         <div className="flex gap-1">
                                             <button
+                                                onClick={() => window.open(`/members/${member.id}`, '_blank')}
+                                                className="p-2 text-gray-400 hover:text-indigo-600 rounded-lg hover:bg-indigo-50"
+                                                title="Önizle"
+                                            >
+                                                <Eye className="w-4 h-4" />
+                                            </button>
+                                            <button
                                                 onClick={() => handleRequestUpdate(member.id, member.email)}
                                                 className="p-2 text-gray-400 hover:text-orange-600 rounded-lg hover:bg-orange-50"
                                                 title="Hatırlatma Gönder"
@@ -289,6 +296,13 @@ export default function AdminMembersPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-right space-x-2">
+                                            <button
+                                                onClick={() => router.push(`/admin/members/${member.id}`)}
+                                                className="inline-flex p-2 text-gray-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                                                title="Önizle"
+                                            >
+                                                <Eye className="w-5 h-5" />
+                                            </button>
                                             <button
                                                 onClick={() => handleRequestUpdate(member.id, member.email)}
                                                 className="inline-flex p-2 text-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition-colors group relative"

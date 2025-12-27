@@ -33,6 +33,7 @@ export default function EditMemberPage() {
     const [formData, setFormData] = useState({
         full_name: '',
         email: '',
+        phone: '', // Added phone
         membership_category: 'individual',
         member_type: 'active',
         membership_start_date: '',
@@ -59,6 +60,7 @@ export default function EditMemberPage() {
                 setFormData({
                     full_name: member.full_name || '',
                     email: member.email || '',
+                    phone: member.phone || '',
                     membership_category: member.membership_category || 'individual',
                     member_type: member.member_type || 'active',
                     membership_start_date: member.membership_date || '',
@@ -148,6 +150,16 @@ export default function EditMemberPage() {
                             disabled // Email usually shouldn't change easily as it matches Auth
                             value={formData.email}
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50 text-gray-500 cursor-not-allowed"
+                        />
+                    </div>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Telefon</label>
+                        <input
+                            type="text"
+                            value={formData.phone}
+                            onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                            placeholder="+90 5XX XXX XX XX"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
                         />
                     </div>
                 </div>

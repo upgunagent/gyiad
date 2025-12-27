@@ -37,6 +37,7 @@ export type DbMember = {
     linkedin_url?: string;
     card_role?: string; // Explicit role for member card display
     is_admin?: boolean; // Added for filtering
+    phone?: string; // Admin-only phone number
     // ... other fields
 };
 
