@@ -7,7 +7,8 @@ import {
     UserPlus,
     LogOut,
     KeyRound,
-    MessageSquare
+    MessageSquare,
+    BarChart3
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -116,6 +117,12 @@ export default function AdminSidebar() {
                         label="Dilek ve Talepler"
                         href="/admin/requests"
                         active={pathname === '/admin/requests'}
+                    />
+                    <NavItem
+                        icon={BarChart3}
+                        label="İstatistikler"
+                        href="/admin/statistics"
+                        active={pathname === '/admin/statistics'}
                     />
                 </nav>
 

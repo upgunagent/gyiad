@@ -18,9 +18,10 @@ type MemberProfileViewProps = {
     backLink: string;
     backText: string;
     sidebar?: React.ReactNode;
+    actionButton?: React.ReactNode;
 };
 
-export default function MemberProfileView({ member, backLink, backText, sidebar, embedded = false }: MemberProfileViewProps & { embedded?: boolean }) {
+export default function MemberProfileView({ member, backLink, backText, sidebar, embedded = false, actionButton }: MemberProfileViewProps & { embedded?: boolean }) {
 
     const Content = () => (
         <div className="max-w-7xl mx-auto pb-12">
@@ -73,6 +74,7 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                             </div>
 
                             <div className="flex gap-3">
+                                {actionButton}
                                 {member.linkedin_url ? (
                                     <a
                                         href={member.linkedin_url}
@@ -112,6 +114,10 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                         <div>
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Pozisyon</label>
                             <div className="font-medium text-gray-900">{member.position}</div>
+                        </div>
+                        <div>
+                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Şirket Adresi</label>
+                            <div className="font-medium text-gray-900 whitespace-pre-wrap">{member.company_address || '-'}</div>
                         </div>
                         <div>
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Sektör</label>
@@ -175,14 +181,36 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                                 ))}
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
                             <div>
                                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Doğum Tarihi</label>
-                                <div className="font-medium text-gray-900 text-sm">{member.birth_date}</div>
+                                <div className="font-medium text-gray-900 text-sm">
+                                    {member.birth_date ? (
+                                        <>
+                                            {new Date(member.birth_date).toLocaleDateString('tr-TR')}
+                                            {(() => {
+                                                const birthDate = new Date(member.birth_date);
+                                                const today = new Date();
+                                                let age = today.getFullYear() - birthDate.getFullYear();
+                                                const m = today.getMonth() - birthDate.getMonth();
+                                                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                                                    age--;
+                                                }
+                                                return <span className="text-gray-500 ml-1">({age} Yaş)</span>;
+                                            })()}
+                                        </>
+                                    ) : '-'}
+                                </div>
                             </div>
                             <div>
                                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Medeni Durum</label>
                                 <div className="font-medium text-gray-900 text-sm capitalize">{member.marital_status === 'married' ? 'Evli' : 'Bekar'}</div>
+                            </div>
+                            <div>
+                                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Cinsiyet</label>
+                                <div className="font-medium text-gray-900 text-sm capitalize">
+                                    {member.gender === 'male' ? 'Erkek' : member.gender === 'female' ? 'Kadın' : '-'}
+                                </div>
                             </div>
                         </div>
                         <div>
@@ -263,7 +291,7 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                     {/* Row 2: Projects (Full Width) */}
                     <div>
                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 block">Diğer GYİAD Çalışmaları</label>
-                        <div className="p-4 bg-gray-50 rounded-xl text-sm text-gray-700 leading-relaxed border border-gray-100 min-h-[100px]">
+                        <div className="p-4 bg-gray-50 rounded-xl text-sm text-gray-700 leading-relaxed border border-gray-100 min-h-[100px] whitespace-pre-wrap">
                             {member.gyiad_projects || 'Henüz aktif bir çalışma bulunmuyor.'}
                         </div>
                     </div>

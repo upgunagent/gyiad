@@ -45,16 +45,18 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const { id } = await getParams(params);
 
-        const { board_roles, membership_start_date, ...profileUpdates } = body;
+        const { board_roles, membership_start_date, membership_status, ...profileUpdates } = body;
 
         // Sanitize date fields: Empty string -> null
         // Map membership_start_date -> membership_date
+        // Map membership_status -> member_type
         const updates: any = {
             ...profileUpdates,
             board_roles: Array.isArray(board_roles) ? board_roles : [],
             birth_date: profileUpdates.birth_date === '' ? null : profileUpdates.birth_date,
             membership_date: (membership_start_date === '' ? null : membership_start_date) || (profileUpdates.membership_date === '' ? null : profileUpdates.membership_date),
             membership_end_date: profileUpdates.membership_end_date === '' ? null : profileUpdates.membership_end_date,
+            member_type: membership_status // Map frontend status to DB field
         };
 
         // Remove the source field if it somehow leaked into profileUpdates (it was destructured out, so it shouldn't, but good to be safe logic-wise)

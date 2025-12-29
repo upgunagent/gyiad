@@ -12,7 +12,12 @@ export default function AdminMembersPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [statusFilter, setStatusFilter] = useState<string>('all');
     const [roleFilter, setRoleFilter] = useState<string>('all');
+    const [genderFilter, setGenderFilter] = useState<string>('all');
+    const [yearFilter, setYearFilter] = useState<string>('all');
     const router = useRouter();
+
+    const currentYear = new Date().getFullYear();
+    const years = Array.from({ length: 21 }, (_, i) => currentYear - i);
 
     useEffect(() => {
         loadMembers();
@@ -78,7 +83,13 @@ export default function AdminMembersPage() {
         const matchesRole = roleFilter === 'all' ||
             (m.board_roles && m.board_roles.includes(roleFilter));
 
-        return matchesSearch && matchesStatus && matchesRole;
+        // Gender filter
+        const matchesGender = genderFilter === 'all' || m.gender === genderFilter;
+
+        // Year filter
+        const matchesYear = yearFilter === 'all' || (m.membership_date && new Date(m.membership_date).getFullYear().toString() === yearFilter);
+
+        return matchesSearch && matchesStatus && matchesRole && matchesGender && matchesYear;
     });
 
     return (
@@ -102,8 +113,8 @@ export default function AdminMembersPage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Search and Filters */}
                 <div className="p-4 border-b border-gray-200">
-                    <div className="flex flex-col md:flex-row gap-4">
-                        <div className="relative flex-1 max-w-md">
+                    <div className="flex flex-col md:flex-row gap-4 flex-wrap">
+                        <div className="relative flex-1 max-w-md min-w-[200px]">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                             <input
                                 type="text"
@@ -139,10 +150,31 @@ export default function AdminMembersPage() {
                             <option value="board_reserve">YK Yedek</option>
                             <option value="audit_board">Denetleme Kurulu</option>
                             <option value="audit_reserve">DK Yedek</option>
-                            <option value="honorary_member">Fahri Üye</option>
+
                             <option value="high_advisory_board">Yüksek İstişare Kurulu</option>
                             <option value="founder">Kurucu</option>
                             <option value="past_president">Geçmiş Dönem Başkan</option>
+                        </select>
+
+                        <select
+                            value={genderFilter}
+                            onChange={(e) => setGenderFilter(e.target.value)}
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0099CC] focus:border-transparent outline-none bg-white"
+                        >
+                            <option value="all">Tüm Cinsiyetler</option>
+                            <option value="male">Erkek</option>
+                            <option value="female">Kadın</option>
+                        </select>
+
+                        <select
+                            value={yearFilter}
+                            onChange={(e) => setYearFilter(e.target.value)}
+                            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0099CC] focus:border-transparent outline-none bg-white"
+                        >
+                            <option value="all">Tüm Yıllar</option>
+                            {years.map(year => (
+                                <option key={year} value={year}>{year}</option>
+                            ))}
                         </select>
                     </div>
                 </div>

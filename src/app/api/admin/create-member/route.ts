@@ -14,10 +14,29 @@ export async function POST(request: Request) {
     try {
         const body = await request.json();
         const {
-            full_name, email, phone,
-            membership_category, membership_status,
-            membership_start_date, membership_end_date,
-            board_roles // Expecting an array now
+            full_name,
+            email,
+            phone,
+            membership_category,
+            membership_status,
+            membership_start_date,
+            membership_end_date,
+            board_roles,
+            card_role,
+            // New Fields
+            company_name,
+            company_address,
+            position,
+            sector,
+            birth_date,
+            marital_status,
+            gender,
+            linkedin_url,
+            websites,
+            education,
+            languages,
+            other_memberships,
+            gyiad_projects
         } = body;
 
         const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!";
@@ -44,11 +63,26 @@ export async function POST(request: Request) {
                 full_name: full_name,
                 phone: phone,
                 membership_category: membership_category,
-                member_type: membership_status, // Map frontend 'status' to DB 'member_type' if needed, mostly 'active' etc.
+                member_type: membership_status, // Map frontend 'status' to DB 'member_type'
                 membership_date: membership_start_date, // Map start to DB 'membership_date'
                 membership_end_date: membership_end_date || null,
-                board_roles: Array.isArray(board_roles) ? board_roles : [board_roles].filter(Boolean), // Ensure array
-                is_admin: false
+                board_roles: Array.isArray(board_roles) ? board_roles : [board_roles].filter(Boolean),
+                is_admin: false,
+                // New Fields Mapped
+                company_name: company_name || null,
+                company_address: company_address || null,
+                position: position || null,
+                sector: sector || null,
+                birth_date: birth_date || null,
+                marital_status: marital_status || 'single',
+                gender: gender || null,
+                linkedin_url: linkedin_url || null,
+                websites: Array.isArray(websites) ? websites.filter(Boolean) : [],
+                education: Array.isArray(education) ? education : [],
+                languages: Array.isArray(languages) ? languages : [],
+                other_memberships: other_memberships || null,
+                gyiad_projects: gyiad_projects || null,
+                card_role: card_role || null
             });
 
         if (profileError) {
@@ -118,7 +152,7 @@ export async function POST(request: Request) {
 
         console.log("Email sent successfully:", emailResponse.data);
 
-        return NextResponse.json({ success: true });
+        return NextResponse.json({ success: true, userId });
 
     } catch (error: any) {
         console.error("API Error:", error);

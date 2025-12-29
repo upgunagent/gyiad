@@ -15,11 +15,13 @@ export type DbMember = {
     avatar_url: string;
     email: string;
     company_name: string;
+    company_address?: string;
     sector: string;
     position: string;
     websites: string[];
     birth_date: string;
     marital_status: 'single' | 'married';
+    gender?: 'male' | 'female';
     education: {
         level: string;
         school: string;

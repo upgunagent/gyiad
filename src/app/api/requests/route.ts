@@ -43,14 +43,45 @@ export async function POST(request: Request) {
             .eq('id', user.id)
             .single();
 
-        // 3. Fetch Admin Emails
-        const { data: admins } = await supabase
+        // Check API Key
+        if (!process.env.RESEND_API_KEY) {
+            console.error("RESEND_API_KEY is not set!");
+            return NextResponse.json({
+                success: true,
+                data,
+                emailSent: false,
+                emailError: "RESEND_API_KEY is missing in environment variables",
+            });
+        }
+
+        // 3. Fetch Admin Emails and Executive Board Emails (Separate queries for safety)
+        const { data: admins, error: adminError } = await supabase
             .from('members')
             .select('email')
             .eq('is_admin', true);
 
-        const adminEmails = admins?.map(a => a.email).filter(Boolean) || [];
-        const recipients = adminEmails.length > 0 ? adminEmails : [FALLBACK_ADMIN_EMAIL];
+        if (adminError) console.error("Error fetching admins:", adminError);
+
+        const { data: executives, error: execError } = await supabase
+            .from('members')
+            .select('email')
+            .contains('board_roles', ['executive_board']);
+
+        if (execError) console.error("Error fetching executives:", execError);
+
+        const adminEmails = admins?.map(m => m.email).filter(Boolean) || [];
+        const executiveEmails = executives?.map(m => m.email).filter(Boolean) || [];
+
+        // Deduplicate logic
+        const uniqueAdminEmails = [...new Set(adminEmails)];
+        const uniqueExecEmails = [...new Set(executiveEmails)];
+
+        // TO: Admins (using unique list)
+        // If admins list is empty after fetch, we fallback to hardcoded admin email
+        const toRecipients = uniqueAdminEmails.length > 0 ? uniqueAdminEmails : [FALLBACK_ADMIN_EMAIL];
+
+        // CC: Executive Board (excluding those who are already in TO list)
+        const ccRecipients = uniqueExecEmails.filter(email => !toRecipients.includes(email));
 
         // 4. Send Notification Email to Admin(s)
         try {
@@ -71,17 +102,29 @@ export async function POST(request: Request) {
 
             await resend.emails.send({
                 from: 'GYİAD <noreply@getmekan.com>',
-                to: recipients,
+                to: toRecipients,
+                cc: ccRecipients,
                 subject: `📝 Yeni Talep: ${subject}`,
                 html: emailHtml
             });
-            console.log("Admin notification sent to:", recipients);
+            console.log("Admin notification sent to:", toRecipients, "CC:", ccRecipients);
         } catch (emailError) {
             console.error("Failed to send admin notification:", emailError);
-            // Don't fail the request just because email failed, but log it
+            return NextResponse.json({
+                success: true,
+                data,
+                emailSent: false,
+                emailError: emailError instanceof Error ? emailError.message : String(emailError),
+                debug: { to: toRecipients, cc: ccRecipients }
+            });
         }
 
-        return NextResponse.json({ success: true, data });
+        return NextResponse.json({
+            success: true,
+            data,
+            emailSent: true,
+            debug: { to: toRecipients, cc: ccRecipients }
+        });
 
     } catch (error: any) {
         console.error("Request creation error:", error);

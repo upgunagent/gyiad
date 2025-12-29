@@ -5,7 +5,7 @@ import { mockMembers } from '@/data/mock-members';
 import { sectors } from '@/data/sectors';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import {
     Building2,
     Globe,
@@ -28,6 +28,15 @@ export default function ProfileEditPage() {
     const [member, setMember] = useState<any>(null); // Start null to show loading/fetching
     const [isLoading, setIsLoading] = useState(true);
     const [userId, setUserId] = useState<string | null>(null);
+    const projectsRef = useRef<HTMLTextAreaElement>(null);
+
+    // Auto-resize textarea on load and value change
+    useEffect(() => {
+        if (projectsRef.current) {
+            projectsRef.current.style.height = 'auto';
+            projectsRef.current.style.height = projectsRef.current.scrollHeight + 'px';
+        }
+    }, [member?.gyiad_projects]);
 
     useEffect(() => {
         async function loadProfile() {
@@ -66,12 +75,14 @@ export default function ProfileEditPage() {
                 education: member.education,
                 full_name: member.full_name,
                 company_name: member.company_name,
+                company_address: member.company_address,
                 position: member.position,
                 sector: member.sector,
                 websites: member.websites ? member.websites.filter((w: string) => w.trim() !== '') : [],
                 email: member.email,
                 birth_date: member.birth_date,
-                marital_status: member.marital_status,
+                marital_status: member.marital_status || 'single',
+                gender: member.gender,
                 languages: member.languages,
                 other_memberships: member.other_memberships,
                 gyiad_projects: member.gyiad_projects,
@@ -188,32 +199,7 @@ export default function ProfileEditPage() {
                                             className="text-3xl font-bold text-gray-900 mb-2 w-full border-b border-gray-200 focus:border-[#0099CC] focus:outline-none bg-transparent px-1 py-1"
                                         />
 
-                                        <div className="flex gap-4 mt-2">
-                                            <div className="flex-1">
-                                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">ŞİRKET</label>
-                                                <div className="flex items-center gap-2 text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
-                                                    <Building2 className="w-4 h-4 text-[#0099CC]" />
-                                                    <input
-                                                        type="text"
-                                                        value={member.company_name}
-                                                        onChange={(e) => setMember({ ...member, company_name: e.target.value })}
-                                                        className="font-medium bg-transparent focus:outline-none w-full"
-                                                    />
-                                                </div>
-                                            </div>
-                                            <div className="flex-1">
-                                                <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">POZSİYON</label>
-                                                <div className="flex items-center gap-2 text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
-                                                    <Briefcase className="w-4 h-4" />
-                                                    <input
-                                                        type="text"
-                                                        value={member.position}
-                                                        onChange={(e) => setMember({ ...member, position: e.target.value })}
-                                                        className="bg-transparent focus:outline-none w-full"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div className="flex gap-3">
@@ -252,6 +238,42 @@ export default function ProfileEditPage() {
                                 Kurumsal Bilgiler
                             </h2>
                             <div className="space-y-6">
+
+                                <div className="grid grid-cols-1 gap-4">
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">ŞİRKET</label>
+                                        <div className="flex items-center gap-2 text-gray-600 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                            <Building2 className="w-4 h-4 text-[#0099CC]" />
+                                            <input
+                                                type="text"
+                                                value={member.company_name || ''}
+                                                onChange={(e) => setMember({ ...member, company_name: e.target.value })}
+                                                className="font-medium bg-transparent focus:outline-none w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">ŞİRKET ADRESİ</label>
+                                        <textarea
+                                            value={member.company_address || ''}
+                                            onChange={(e) => setMember({ ...member, company_address: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099CC]/20 focus:border-[#0099CC] min-h-[80px] text-sm bg-gray-50"
+                                            placeholder="Tam şirket adresi..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">POZSİYON</label>
+                                        <div className="flex items-center gap-2 text-gray-500 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2">
+                                            <Briefcase className="w-4 h-4" />
+                                            <input
+                                                type="text"
+                                                value={member.position}
+                                                onChange={(e) => setMember({ ...member, position: e.target.value })}
+                                                className="bg-transparent focus:outline-none w-full"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
 
                                 <div>
                                     <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Sektör</label>
@@ -348,7 +370,7 @@ export default function ProfileEditPage() {
                             </h2>
                             <div className="space-y-6">
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                     <div>
                                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Doğum Tarihi</label>
                                         <input
@@ -367,6 +389,18 @@ export default function ProfileEditPage() {
                                         >
                                             <option value="married">Evli</option>
                                             <option value="single">Bekar</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Cinsiyet</label>
+                                        <select
+                                            value={member.gender || ''}
+                                            onChange={(e) => setMember({ ...member, gender: e.target.value as 'male' | 'female' })}
+                                            className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099CC]/20 focus:border-[#0099CC] bg-white"
+                                        >
+                                            <option value="">Seçiniz</option>
+                                            <option value="male">Erkek</option>
+                                            <option value="female">Kadın</option>
                                         </select>
                                     </div>
                                 </div>
@@ -535,15 +569,13 @@ export default function ProfileEditPage() {
                                     <span className="text-[10px] font-normal normal-case text-gray-400 hidden sm:inline">GYİAD tarihindeki rolünüzü ve katkılarınızı detaylandırınız.</span>
                                 </label>
                                 <textarea
+                                    ref={projectsRef}
                                     value={member.gyiad_projects || ''}
                                     onChange={(e) => {
                                         setMember({ ...member, gyiad_projects: e.target.value });
-                                        e.target.style.height = 'auto';
-                                        e.target.style.height = e.target.scrollHeight + 'px';
                                     }}
                                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#0099CC]/20 focus:border-[#0099CC] min-h-[150px] text-sm leading-relaxed text-gray-700 resize-none overflow-hidden bg-white"
                                     placeholder="GYİAD bünyesinde yer aldığınız komiteler, projeler ve katkılarınızı buraya yazınız..."
-                                    style={{ height: 'auto' }}
                                     onInput={(e) => {
                                         const target = e.target as HTMLTextAreaElement;
                                         target.style.height = 'auto';
