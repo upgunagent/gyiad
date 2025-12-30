@@ -258,10 +258,9 @@ export default function AdminMembersPage() {
                             onChange={(e) => setStatusFilter(e.target.value)}
                             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0099CC] focus:border-transparent outline-none bg-white"
                         >
-                            <option value="all">Tüm Durumlar</option>
+                            <option value="all">Tüm Üyelikler</option>
                             <option value="active">Aktif Üye</option>
                             <option value="honorary">Fahri Üye</option>
-                            <option value="founder">Kurucu Üye</option>
                             <option value="left">Ayrılmış Üye</option>
                         </select>
 
