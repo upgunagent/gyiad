@@ -39,6 +39,8 @@ export async function POST(request: Request) {
             gyiad_projects
         } = body;
 
+        console.log("Create Member Request:", { email, full_name, board_roles, card_role });
+
         const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!";
 
         // 1. Create User
@@ -66,7 +68,7 @@ export async function POST(request: Request) {
                 member_type: membership_status, // Map frontend 'status' to DB 'member_type'
                 membership_date: membership_start_date, // Map start to DB 'membership_date'
                 membership_end_date: membership_end_date || null,
-                board_roles: Array.isArray(board_roles) ? board_roles : [board_roles].filter(Boolean),
+                board_roles: Array.isArray(board_roles) ? board_roles : [],
                 is_admin: false,
                 // New Fields Mapped
                 company_name: company_name || null,

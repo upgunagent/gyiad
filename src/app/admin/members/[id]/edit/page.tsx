@@ -356,6 +356,16 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                                 </select>
                             </div>
                         </div>
+
+                        <div className="mt-6">
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Diğer Üyelikler</label>
+                            <textarea
+                                value={formData.other_memberships}
+                                onChange={e => setFormData({ ...formData, other_memberships: e.target.value })}
+                                className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0099CC] bg-gray-50 h-24"
+                                placeholder="TÜSİAD, MÜSİAD vb."
+                            />
+                        </div>
                     </div>
 
                     {/* 4. Eğitim Bilgileri */}

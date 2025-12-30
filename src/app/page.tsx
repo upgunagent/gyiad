@@ -51,11 +51,7 @@ function Dashboard() {
       result = result.filter(m => m.gender === genderFilter);
     }
 
-    // YEAR FILTER LOGIC
-    const yearFilter = searchParams.get('year');
-    if (yearFilter) {
-      result = result.filter(m => m.membership_date && new Date(m.membership_date).getFullYear().toString() === yearFilter);
-    }
+
 
     // GLOBAL SEARCH LOGIC
     const searchTerm = searchParams.get('search');

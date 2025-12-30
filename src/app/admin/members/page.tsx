@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, RefreshCw, Eye } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, RefreshCw, Eye, Download } from 'lucide-react';
 import { memberService, DbMember } from '@/services/memberService';
 import { useRouter } from 'next/navigation';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export default function AdminMembersPage() {
     const [members, setMembers] = useState<DbMember[]>([]);
@@ -69,6 +71,125 @@ export default function AdminMembersPage() {
         }
     };
 
+    const handleExportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Gyiad Üye Listesi');
+
+        // 1. Title (Row 1) - Moved to A1 as requested
+        const titleRow = worksheet.getRow(1);
+        const titleCell = titleRow.getCell(1); // A1
+        titleCell.value = `GYİAD ÜYE LİSTESİ (Üye Sayısı: ${filteredMembers.length} Kişi)`;
+        titleCell.font = { name: 'Arial', size: 16, bold: true }; // 16pt
+        titleCell.alignment = { vertical: 'middle', horizontal: 'left' };
+        worksheet.mergeCells('A1:D1');
+        titleRow.height = 30;
+
+        // 2. Define Columns (Row 2)
+        const headerRow = worksheet.getRow(2);
+        const columns = [
+            'S.No', 'Ad Soyad', 'Email', 'Telefon', 'Doğum Tarihi', 'Medeni Durum', 'Cinsiyet', 'Eğitim', 'Yabancı Diller',
+            'Diğer Üyelikler', 'Şirket Adı', 'Adres', 'Pozisyon', 'Sektör', 'Web Siteleri', 'LinkedIn',
+            'Üyelik Türü', 'Durumu', 'Başlangıç Tarihi', 'Bitiş Tarihi'
+        ];
+        headerRow.values = columns;
+
+        headerRow.font = { name: 'Arial', size: 13, bold: true, color: { argb: 'FFFFFFFF' } };
+        headerRow.fill = {
+            type: 'pattern',
+            pattern: 'solid',
+            fgColor: { argb: 'FF0099CC' }
+        };
+        headerRow.height = 30;
+
+        // 3. Add Data
+        filteredMembers.forEach((m, index) => {
+            const rowValues = [
+                index + 1, // S.No
+                m.full_name,
+                m.email,
+                m.phone,
+                m.birth_date,
+                m.marital_status === 'single' ? 'Bekar' : 'Evli',
+                m.gender === 'male' ? 'Erkek' : m.gender === 'female' ? 'Kadın' : '',
+                m.education?.map((e: any) => e.school).join(', '),
+                m.languages?.join(', '),
+                m.other_memberships,
+                m.company_name,
+                m.company_address,
+                m.position,
+                m.sector,
+                m.websites?.join(', '),
+                m.linkedin_url,
+                formatMemberType(m.member_type),
+                m.member_type === 'left' ? 'Ayrıldı' : 'Aktif',
+                m.membership_date,
+                m.membership_end_date
+            ];
+            const row = worksheet.addRow(rowValues);
+
+            // Styling for this row
+            // A Column (S.No) Center
+            row.getCell(1).alignment = { vertical: 'middle', horizontal: 'center' };
+
+            // Type (17) & Status (18) Coloring & Centering
+            const typeCell = row.getCell(17);
+            const statusCell = row.getCell(18);
+
+            [typeCell, statusCell].forEach(cell => {
+                cell.alignment = { vertical: 'middle', horizontal: 'center' };
+                const val = cell.value?.toString() || '';
+
+                let argb = null;
+                if (val.includes('Aktif')) argb = 'FFC6EFCE'; // Green
+                else if (val.includes('Fahri')) argb = 'FFE9D5FF'; // Purple
+                else if (val.includes('Ayrıl') || val.includes('Ayrılmış')) argb = 'FFFFC7CE'; // Red
+
+                if (argb) {
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb }
+                    };
+                }
+            });
+        });
+
+        // 4. Global Column Formatting & Borders
+        worksheet.columns.forEach((column, i) => {
+            column.width = 25;
+            if (i !== 0 && i !== 16 && i !== 17) {
+                column.alignment = { wrapText: true, vertical: 'top', horizontal: 'left' };
+            }
+        });
+
+        // Specific widths
+        worksheet.getColumn(1).width = 8;  // S.No
+        worksheet.getColumn(2).width = 30; // Name
+        worksheet.getColumn(3).width = 30; // Email
+        worksheet.getColumn(10).width = 30; // Other memberships
+        worksheet.getColumn(12).width = 40; // Address
+
+        // Apply Borders to all cells in the table (Starting form Row 2)
+        worksheet.eachRow((row, rowNumber) => {
+            if (rowNumber >= 2) {
+                row.eachCell((cell) => {
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                });
+            }
+        });
+
+        // Save
+        const buffer = await workbook.xlsx.writeBuffer();
+        saveAs(new Blob([buffer]), `Gyiad_Uye_Listesi_${new Date().toLocaleDateString('tr-TR')}.xlsx`);
+    };
+
+
+
     // function removed
 
     const filteredMembers = members.filter(m => {
@@ -100,6 +221,13 @@ export default function AdminMembersPage() {
                     <p className="text-gray-500">Tüm üyeleri görüntüleyin, düzenleyin veya silin.</p>
                 </div>
                 <div className="flex gap-3">
+                    <button
+                        onClick={handleExportExcel}
+                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium shadow-sm"
+                    >
+                        <Download className="w-4 h-4" />
+                        Excel İndir
+                    </button>
                     <Link
                         href="/admin/members/new"
                         className="flex items-center gap-2 px-4 py-2 bg-[#0099CC] text-white rounded-lg hover:bg-[#007aa3] transition-colors text-sm font-medium shadow-sm"
@@ -161,7 +289,7 @@ export default function AdminMembersPage() {
                             onChange={(e) => setGenderFilter(e.target.value)}
                             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#0099CC] focus:border-transparent outline-none bg-white"
                         >
-                            <option value="all">Tüm Cinsiyetler</option>
+                            <option value="all">Cinsiyet</option>
                             <option value="male">Erkek</option>
                             <option value="female">Kadın</option>
                         </select>

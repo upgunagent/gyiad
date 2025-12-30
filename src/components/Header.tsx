@@ -20,7 +20,7 @@ export default function Header({ title = "AKTİF ÜYELER" }: { title?: string })
     };
 
     const currentYear = new Date().getFullYear();
-    const years = Array.from({ length: 21 }, (_, i) => currentYear - i);
+
 
     return (
         <header className="flex flex-col md:flex-row md:items-center justify-end gap-4 mb-8">
@@ -63,26 +63,6 @@ export default function Header({ title = "AKTİF ÜYELER" }: { title?: string })
                     <option value="">Cinsiyet</option>
                     <option value="male">Erkek</option>
                     <option value="female">Kadın</option>
-                </select>
-
-                {/* Membership Year Filter */}
-                <select
-                    onChange={(e) => {
-                        const params = new URLSearchParams(searchParams);
-                        if (e.target.value) {
-                            params.set('year', e.target.value);
-                        } else {
-                            params.delete('year');
-                        }
-                        replace(`${pathname}?${params.toString()}`);
-                    }}
-                    value={searchParams.get('year') || ''}
-                    className="px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#0099CC]/20 focus:border-[#0099CC] bg-white text-gray-700 w-[150px]"
-                >
-                    <option value="">Üyelik Yılı</option>
-                    {years.map(year => (
-                        <option key={year} value={year}>{year}</option>
-                    ))}
                 </select>
 
                 {/* Search */}

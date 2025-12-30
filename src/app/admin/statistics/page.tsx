@@ -59,7 +59,7 @@ export default function StatisticsPage() {
     const [members, setMembers] = useState<DbMember[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [movementYear, setMovementYear] = useState<number>(new Date().getFullYear());
-    const [statusYear, setStatusYear] = useState<number>(new Date().getFullYear());
+    const [statusYear, setStatusYear] = useState<number | string>('current');
 
     useEffect(() => {
         async function loadData() {
@@ -173,11 +173,34 @@ export default function StatisticsPage() {
         const isFounder = (m: DbMember) =>
             m.member_type === 'founder' || (m.board_roles && m.board_roles.includes('founder'));
 
-        // Don't exclude founders from active count. 
-        const activeEvents = members.filter(m => m.member_type === 'active' && new Date(m.membership_date).getFullYear() === statusYear).length;
-        const honoraryEvents = members.filter(m => m.member_type === 'honorary' && new Date(m.membership_date).getFullYear() === statusYear).length;
-        const founderEvents = members.filter(m => isFounder(m) && new Date(m.membership_date).getFullYear() === statusYear).length;
-        const leftEvents = members.filter(m => m.member_type === 'left' && m.membership_end_date && new Date(m.membership_end_date).getFullYear() === statusYear).length;
+        let activeEvents, honoraryEvents, founderEvents, leftEvents;
+
+        if (statusYear === 'current') {
+            // Show TOTALS as they are right now (Active = current active members, etc.)
+            // Similar to top cards logic
+            activeEvents = members.filter(m => m.member_type === 'active').length;
+            honoraryEvents = members.filter(m => m.member_type === 'honorary').length;
+            founderEvents = members.filter(m => isFounder(m)).length;
+            leftEvents = members.filter(m => m.member_type === 'left').length;
+        } else {
+            // Show events/changes in that specific year (who joined/became that status in that year)
+            // Note: This logic assumes 'membership_date' is the start date for that status.
+            /* 
+               CRITICAL: The previous logic was:
+               activeEvents = members.filter(m => m.member_type === 'active' && new Date(m.membership_date).getFullYear() === statusYear).length;
+               
+               This actually counted "Active members who JOINED in statusYear". 
+               It did NOT show "Total Active Members in statusYear".
+               The user asked for "Existing total for all years" when "Güncel" is selected.
+               For specific years, I will preserve the existing logic (JOINED/CHANGED in that year) as implied by the previous code,
+               or if the user wanted "Total at end of that year", that would be much harder.
+               Given the prompt "sadece admin yapabisin. o yüzden admin sayfasındaki kalsın" implies the previous behavior was acceptable for years.
+            */
+            activeEvents = members.filter(m => m.member_type === 'active' && new Date(m.membership_date).getFullYear() === statusYear).length;
+            honoraryEvents = members.filter(m => m.member_type === 'honorary' && new Date(m.membership_date).getFullYear() === statusYear).length;
+            founderEvents = members.filter(m => isFounder(m) && new Date(m.membership_date).getFullYear() === statusYear).length;
+            leftEvents = members.filter(m => m.member_type === 'left' && m.membership_end_date && new Date(m.membership_end_date).getFullYear() === statusYear).length;
+        }
 
         return [
             { name: 'Aktif Üye', value: activeEvents },
@@ -360,9 +383,13 @@ export default function StatisticsPage() {
                     <h2 className="text-xl font-bold text-gray-800">Üyelik Türü İstatistikleri</h2>
                     <select
                         value={statusYear}
-                        onChange={(e) => setStatusYear(Number(e.target.value))}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setStatusYear(val === 'current' ? 'current' : Number(val));
+                        }}
                         className="p-2 border border-gray-300 rounded-lg bg-white"
                     >
+                        <option value="current">Güncel (Tümü)</option>
                         {years.map(y => <option key={y} value={y}>{y}</option>)}
                     </select>
                 </div>
@@ -385,7 +412,7 @@ export default function StatisticsPage() {
                         </BarChart>
                     </ResponsiveContainer>
                     <div className="text-center mt-4 text-sm text-gray-500">
-                        {statusYear} yılındaki üyelik değişimleri
+                        {statusYear === 'current' ? 'Toplam mevcut üye sayıları' : `${statusYear} yılındaki üyelik değişimleri`}
                     </div>
                 </div>
             </div>
