@@ -104,8 +104,7 @@ export default function ProfileEditPage() {
                 other_memberships: member.other_memberships,
                 gyiad_projects: member.gyiad_projects,
                 linkedin_url: member.linkedin_url,
-                gyiad_projects: member.gyiad_projects,
-                linkedin_url: member.linkedin_url,
+
                 avatar_url: member.avatar_url,
                 kvkk_consent: member.kvkk_consent,
                 kvkk_consent_date: new Date().toISOString()
