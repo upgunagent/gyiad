@@ -119,16 +119,41 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Şirket Adresi</label>
                             <div className="font-medium text-gray-900 whitespace-pre-wrap">{member.company_address || '-'}</div>
                         </div>
-                        <div>
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Sektör</label>
-                            <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
-                                {member.sector}
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Sektör</label>
+                                <div className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-50 text-blue-700">
+                                    {member.sector}
+                                </div>
+                            </div>
+                            <div>
+                                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">İş Alanı</label>
+                                <div className="font-medium text-gray-900">{member.business_area || '-'}</div>
                             </div>
                         </div>
-                        <div>
-                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">İş Alanı</label>
-                            <div className="font-medium text-gray-900">{member.business_area || '-'}</div>
-                        </div>
+
+                        {(member.company_turnover || member.number_of_employees) && (
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    {member.company_turnover && (
+                                        <>
+                                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Şirket Yıllık Cirosu</label>
+                                            <div className="font-medium text-gray-900">{member.company_turnover}</div>
+                                        </>
+                                    )}
+                                </div>
+                                <div>
+                                    {member.number_of_employees && (
+                                        <>
+                                            <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Çalışan Sayısı</label>
+                                            <div className="font-medium text-gray-900">{member.number_of_employees}</div>
+                                        </>
+                                    )}
+                                </div>
+                            </div>
+                        )}
+
                         <div>
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">İletişim</label>
                             <div className="flex flex-col gap-2">
@@ -145,18 +170,6 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                                 )}
                             </div>
                         </div>
-                        {member.company_turnover && (
-                            <div>
-                                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Şirket Yıllık Cirosu</label>
-                                <div className="font-medium text-gray-900">{member.company_turnover}</div>
-                            </div>
-                        )}
-                        {member.number_of_employees && (
-                            <div>
-                                <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Çalışan Sayısı</label>
-                                <div className="font-medium text-gray-900">{member.number_of_employees}</div>
-                            </div>
-                        )}
                     </div>
                 </div>
 
