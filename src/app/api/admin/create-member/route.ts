@@ -96,7 +96,7 @@ export async function POST(request: Request) {
         // 3. Send Email
         console.log("Attempting to send email via Resend...");
         const emailResponse = await resend.emails.send({
-            from: 'GYİAD <noreply@getmekan.com>',
+            from: 'GYİAD <noreply@gyiad.org.tr>',
             to: [email],
             subject: 'GYİAD Üyeliğiniz Oluşturuldu',
             html: `

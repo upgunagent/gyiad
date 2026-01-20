@@ -59,7 +59,8 @@ export async function middleware(request: NextRequest) {
             // Statik dosyalar
             path.includes('.') ||
             path.startsWith('/_next') ||
-            path.startsWith('/api/auth'); // Auth API'leri
+            path.startsWith('/api/auth') || // Auth API'leri
+            path === '/api/send-reset-email'; // Şifre sıfırlama API'si
 
         // 4. Yönlendirme Mantığı
         if (!user) {

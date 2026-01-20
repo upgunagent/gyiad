@@ -85,7 +85,7 @@ export async function PUT(request: Request) {
                 );
 
                 await resend.emails.send({
-                    from: 'GYİAD <noreply@getmekan.com>',
+                    from: 'GYİAD <noreply@gyiad.org.tr>',
                     to: [member.email],
                     subject: '✅ Talebiniz Yanıtlandı',
                     html: emailHtml

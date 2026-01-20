@@ -83,7 +83,7 @@ export async function POST(request: Request) {
                 );
 
                 await resend.emails.send({
-                    from: 'GYİAD <noreply@getmekan.com>',
+                    from: 'GYİAD <noreply@gyiad.org.tr>',
                     to: toRecipients,
                     cc: ccRecipients,
                     subject: `📱 Yeni Mobil Talep: ${subject}`,

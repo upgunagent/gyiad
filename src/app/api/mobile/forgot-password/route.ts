@@ -52,7 +52,7 @@ export async function POST(request: Request) {
 
         // 4. Send Email
         const { error: emailError } = await resend.emails.send({
-            from: 'GYİAD <noreply@getmekan.com>',
+            from: 'GYİAD <noreply@gyiad.org.tr>',
             to: [email],
             subject: 'GYİAD - Şifre Sıfırlama Kodu',
             html: `

@@ -79,7 +79,7 @@ export async function POST(request: Request) {
 
         // Send Email
         await resend.emails.send({
-            from: 'GYİAD <noreply@getmekan.com>',
+            from: 'GYİAD <noreply@gyiad.org.tr>',
             to: [member.email],
             subject: '🔔 Önemli: Üyelik Bilgileri Güncelleme Talebi',
             html: emailHtml
