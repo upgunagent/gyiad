@@ -8,13 +8,14 @@ interface MemberCardProps {
     avatarUrl: string;
     role?: string;
     cardRole?: string; // Explicitly passed card role
+    filter?: string;
 }
 
-export default function MemberCard({ id, name, company, avatarUrl, role, cardRole }: MemberCardProps) {
+export default function MemberCard({ id, name, company, avatarUrl, role, cardRole, filter }: MemberCardProps) {
     // Priority: cardRole > role (which is usually computed)
     const displayRole = cardRole || role;
     return (
-        <Link href={`/members/${id}`} className="group block h-full">
+        <Link href={`/members/${id}${filter ? `?filter=${filter}` : ''}`} className="group block h-full">
             <div className="bg-white rounded-xl border border-gray-100 p-6 flex flex-col items-center text-center h-full transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:border-gyiad-blue/30 relative overflow-hidden">
 
                 {/* Subtle Decorative Background */}

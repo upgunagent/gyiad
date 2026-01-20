@@ -4,8 +4,9 @@ import { mockMembers } from '@/data/mock-members';
 import { createClient } from '@/lib/supabase/server';
 import MemberProfileView from '@/components/MemberProfileView';
 
-export default async function MemberDetailPage({ params }: { params: Promise<{ id: string }> }) {
+export default async function MemberDetailPage({ params, searchParams }: { params: Promise<{ id: string }>, searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const { id } = await params;
+    const { filter } = await searchParams;
 
     // Try to fetch from Supabase
     const supabase = await createClient();
@@ -33,11 +34,27 @@ export default async function MemberDetailPage({ params }: { params: Promise<{ i
         notFound();
     }
 
+    // Determine Back Link
+    const backLink = filter ? `/?filter=${filter}` : '/';
+
+    // Optional: Dynamic Text based on filter
+    const getBackText = (f: string) => {
+        const map: Record<string, string> = {
+            'active': 'Aktif Üyeler Listesine Dön',
+            'honorary': 'Fahri Üyeler Listesine Dön',
+            'president': 'Başkan Sayfasına Dön',
+            // ... add others if needed
+        };
+        return map[f as string] || 'Üye Listesine Dön';
+    };
+
+    const backText = filter ? getBackText(filter as string) : 'Üye Listesine Dön';
+
     return (
         <MemberProfileView
             member={member}
-            backLink="/"
-            backText="Üye Listesine Dön"
+            backLink={backLink}
+            backText={backText}
             sidebar={<Sidebar />}
         />
     );

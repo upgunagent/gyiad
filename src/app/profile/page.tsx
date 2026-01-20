@@ -45,8 +45,6 @@ export default async function ProfilePage() {
     return (
         <MemberProfileView
             member={member}
-            backLink="/"
-            backText="Ana Sayfaya Dön"
             sidebar={<Sidebar />}
             actionButton={
                 <Link

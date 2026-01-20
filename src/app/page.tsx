@@ -169,6 +169,7 @@ function Dashboard() {
                   role={formatPrimaryRole(member.board_roles, member.member_type)}
                   avatarUrl={member.avatar_url}
                   cardRole={member.card_role}
+                  filter={filter}
                 />
               ))}
             </div>

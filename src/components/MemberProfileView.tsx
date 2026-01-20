@@ -18,8 +18,8 @@ import { useState } from 'react';
 
 type MemberProfileViewProps = {
     member: any;
-    backLink: string;
-    backText: string;
+    backLink?: string;
+    backText?: string;
     sidebar?: React.ReactNode;
     actionButton?: React.ReactNode;
 };
@@ -30,15 +30,20 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
     const Content = () => (
         <div className="max-w-7xl mx-auto pb-12">
             {/* Header / Back Button */}
-            <div className="p-6">
-                <Link
-                    href={backLink}
-                    className="inline-flex items-center text-gray-500 hover:text-[#0099CC] transition-colors gap-2 text-sm font-medium"
-                >
-                    <ArrowLeft className="w-4 h-4" />
-                    {backText}
-                </Link>
-            </div>
+            {backLink && (
+                <div className="p-6">
+                    <Link
+                        href={backLink}
+                        className="inline-flex items-center text-gray-500 hover:text-[#0099CC] transition-colors gap-2 text-sm font-medium"
+                    >
+                        <ArrowLeft className="w-4 h-4" />
+                        {backText || 'Geri Dön'}
+                    </Link>
+                </div>
+            )}
+
+            {/* Spacer if no back button to keep layout consistent or just rely on padding */}
+            {!backLink && <div className="h-6"></div>}
 
             {/* Hero Section */}
             <div className="bg-white mx-6 rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative">
