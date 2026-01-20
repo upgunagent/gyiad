@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 import { getEmailTemplate } from '@/lib/email-template';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
-const FALLBACK_ADMIN_EMAIL = 'info@gyiad.com';
+const FALLBACK_ADMIN_EMAIL = 'gyiad@gyiad.org.tr';
 
 // Initialize Supabase Admin client
 const supabaseAdmin = createClient(
