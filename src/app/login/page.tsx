@@ -83,8 +83,8 @@ export default function LoginPage() {
                             https://gyiad.org.tr
                         </a>
                         <br />
-                        <a href="https://www.gyiaduyeler.org" target="_blank" rel="noopener noreferrer" className="text-[#0099CC] hover:underline mt-1 inline-block">
-                            https://www.gyiaduyeler.org
+                        <a href="https://www.gyiaduyeler.org.tr" target="_blank" rel="noopener noreferrer" className="text-[#0099CC] hover:underline mt-1 inline-block">
+                            https://www.gyiaduyeler.org.tr
                         </a>
                     </p>
                     <div className="flex gap-4 text-sm text-gray-500">
