@@ -81,7 +81,7 @@ export async function PUT(request: Request) {
                     </div>
                     `,
                     'Taleplerim Sayfasına Git',
-                    `https://gyiad.vercel.app/login`
+                    `https://www.gyiaduyeler.org.tr/login`
                 );
 
                 await resend.emails.send({

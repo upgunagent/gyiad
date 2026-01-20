@@ -74,7 +74,7 @@ export async function POST(request: Request) {
             </div>
             `,
             'Profilimi Güncelle',
-            `https://gyiad.vercel.app/login`
+            `https://www.gyiaduyeler.org.tr/login`
         );
 
         // Send Email

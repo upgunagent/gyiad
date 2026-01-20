@@ -97,7 +97,7 @@ export async function POST(request: Request) {
                 </div>
                 `,
                 'Admin Paneline Git',
-                `https://gyiad.vercel.app/login`
+                `https://www.gyiaduyeler.org.tr/login`
             );
 
             await resend.emails.send({

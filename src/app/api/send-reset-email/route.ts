@@ -25,7 +25,7 @@ export async function POST(request: Request) {
             type: 'magiclink',
             email: email,
             options: {
-                redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'}/reset-password`,
+                redirectTo: `https://www.gyiaduyeler.org.tr/reset-password`,
             }
         });
 

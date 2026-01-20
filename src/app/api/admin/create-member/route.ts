@@ -125,7 +125,7 @@ export async function POST(request: Request) {
                         </div>
 
                         <div style="text-align: center; margin: 30px 0;">
-                            <a href="https://gyiad.vercel.app/login" 
+                            <a href="https://www.gyiaduyeler.org.tr/login" 
                                style="background: #0099CC; color: white; padding: 15px 30px; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">
                                 Giriş Yap
                             </a>
