@@ -157,6 +157,12 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                         <div>
                             <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">İletişim</label>
                             <div className="flex flex-col gap-2">
+                                {member.email && (
+                                    <a href={`mailto:${member.email}`} className="flex items-center gap-2 text-[#0099CC] hover:underline text-sm font-medium">
+                                        <Mail className="w-3 h-3" />
+                                        {member.email}
+                                    </a>
+                                )}
                                 {member.websites?.filter((site: string) => site && site.trim() !== '').map((site: string, i: number) => (
                                     <a key={i} href={`https://${site}`} target="_blank" className="flex items-center gap-2 text-[#0099CC] hover:underline text-sm font-medium">
                                         <Globe className="w-3 h-3" />
