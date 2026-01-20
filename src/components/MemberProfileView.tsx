@@ -10,8 +10,11 @@ import {
     Award,
     Briefcase,
     User,
-    ArrowLeft
+    ArrowLeft,
+    X,
+    Maximize2
 } from 'lucide-react';
+import { useState } from 'react';
 
 type MemberProfileViewProps = {
     member: any;
@@ -22,6 +25,7 @@ type MemberProfileViewProps = {
 };
 
 export default function MemberProfileView({ member, backLink, backText, sidebar, embedded = false, actionButton }: MemberProfileViewProps & { embedded?: boolean }) {
+    const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
     const Content = () => (
         <div className="max-w-7xl mx-auto pb-12">
@@ -44,14 +48,22 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                 <div className="px-8 pb-8 flex flex-col md:flex-row gap-8 relative mt-[-64px]">
                     {/* Profile Image */}
                     <div className="flex-shrink-0">
-                        <div className="w-72 h-72 rounded-full border-4 border-white shadow-lg relative bg-white flex items-center justify-center overflow-hidden">
+                        <div
+                            className={`w-72 h-72 rounded-full border-4 border-white shadow-lg relative bg-white flex items-center justify-center overflow-hidden ${member.avatar_url ? 'cursor-pointer group' : ''}`}
+                            onClick={() => member.avatar_url && setIsImageModalOpen(true)}
+                        >
                             {member.avatar_url ? (
-                                <Image
-                                    src={member.avatar_url}
-                                    alt={member.full_name}
-                                    fill
-                                    className="object-cover"
-                                />
+                                <>
+                                    <Image
+                                        src={member.avatar_url}
+                                        alt={member.full_name}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                                        <Maximize2 className="w-8 h-8 text-white drop-shadow-md" />
+                                    </div>
+                                </>
                             ) : (
                                 <User className="w-20 h-20 text-gray-300" />
                             )}
@@ -329,6 +341,40 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                 </div>
 
             </div >
+
+            {/* Image Lightbox Modal */}
+            {isImageModalOpen && member.avatar_url && (
+                <div
+                    className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm p-4 animate-in fade-in duration-200"
+                    onClick={() => setIsImageModalOpen(false)}
+                >
+                    <button
+                        className="absolute top-6 right-6 text-white/70 hover:text-white p-2 rounded-full hover:bg-white/10 transition-colors z-50"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsImageModalOpen(false);
+                        }}
+                    >
+                        <X className="w-8 h-8" />
+                    </button>
+
+                    <div
+                        className="relative max-w-5xl max-h-[90vh] w-full h-full flex items-center justify-center"
+                        onClick={(e) => e.stopPropagation()} // Prevent close when clicking image area wrapper
+                    >
+                        <div className="relative w-full h-full">
+                            <Image
+                                src={member.avatar_url}
+                                alt={member.full_name}
+                                fill
+                                className="object-contain"
+                                sizes="90vw"
+                                priority
+                            />
+                        </div>
+                    </div>
+                </div>
+            )}
         </div >
     );
 
