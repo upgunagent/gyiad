@@ -45,13 +45,28 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const { id } = await getParams(params);
 
-        const { board_roles, membership_start_date, membership_status, ...profileUpdates } = body;
+        const { board_roles, membership_start_date, membership_status, email, ...profileUpdates } = body;
 
+        // 1. Update Supabase Auth Email if provided
+        if (email) {
+            const { error: authError } = await supabaseAdmin.auth.admin.updateUserById(id, {
+                email: email,
+                email_confirm: true // Auto-confirm the new email
+            });
+
+            if (authError) {
+                console.error("Auth update error:", authError);
+                return NextResponse.json({ error: `E-posta güncellenemedi: ${authError.message}` }, { status: 400 });
+            }
+        }
+
+        // 2. Update Public Member Profile
         // Sanitize date fields: Empty string -> null
         // Map membership_start_date -> membership_date
         // Map membership_status -> member_type
         const updates: any = {
             ...profileUpdates,
+            email: email, // Update email in profile as well
             board_roles: Array.isArray(board_roles) ? board_roles : [],
             birth_date: profileUpdates.birth_date === '' ? null : profileUpdates.birth_date,
             membership_date: (membership_start_date === '' ? null : membership_start_date) || (profileUpdates.membership_date === '' ? null : profileUpdates.membership_date),
@@ -60,8 +75,6 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             number_of_employees: profileUpdates.number_of_employees || null,
             member_type: membership_status // Map frontend status to DB field
         };
-
-        // Remove the source field if it somehow leaked into profileUpdates (it was destructured out, so it shouldn't, but good to be safe logic-wise)
 
         const { error } = await supabaseAdmin
             .from('members')

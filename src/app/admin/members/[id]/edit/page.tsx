@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { Loader2, Save, Plus, Trash2, Building2, User, Globe, ArrowLeft, Camera } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Building2, User, Globe, ArrowLeft, Camera, Pencil } from 'lucide-react';
 import { sectors } from '@/data/sectors';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -44,6 +44,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
 
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [isEmailEditable, setIsEmailEditable] = useState(false);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -255,14 +256,31 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">E-Posta</label>
-                                <input
-                                    type="email"
-                                    required
-                                    disabled
-                                    value={formData.email}
-                                    className="w-full px-4 py-2 rounded-lg border border-gray-200 bg-gray-100 text-gray-500 cursor-not-allowed"
-                                    title="E-posta adresi değiştirilemez"
-                                />
+                                <div className="relative">
+                                    <input
+                                        type="email"
+                                        required
+                                        disabled={!isEmailEditable}
+                                        value={formData.email}
+                                        onChange={e => setFormData({ ...formData, email: e.target.value })}
+                                        className={`w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0099CC] 
+                                            ${isEmailEditable ? 'bg-white text-gray-900' : 'bg-gray-100 text-gray-500 cursor-not-allowed'}`}
+                                        title={isEmailEditable ? "E-posta adresini düzenleyin" : "E-posta adresini değiştirmek için kalem ikonuna tıklayın"}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsEmailEditable(!isEmailEditable)}
+                                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-[#0099CC] hover:bg-blue-50 rounded-md transition-colors"
+                                        title="E-posta adresini düzenle"
+                                    >
+                                        <Pencil className="w-4 h-4" />
+                                    </button>
+                                </div>
+                                {isEmailEditable && (
+                                    <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                                        ⚠️ Dikkat: E-posta değiştiğinde üyenin giriş yaparken kullandığı adres de değişecektir.
+                                    </p>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Telefon Numarası</label>
