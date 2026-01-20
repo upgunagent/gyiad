@@ -28,12 +28,7 @@ export default function AdminMembersPage() {
     const loadMembers = async () => {
         setIsLoading(true);
         const data = await memberService.getAllMembers();
-        // Filter out admin users (those with GYİAD as company or admin emails)
-        const memberData = (data || []).filter(m =>
-            m.company_name !== 'GYİAD' &&
-            !m.email?.includes('upgunagent') &&
-            !m.email?.includes('admin@gyiad')
-        );
+        const memberData = (data || []).filter(m => !m.is_admin);
         setMembers(memberData);
         setIsLoading(false);
     };
