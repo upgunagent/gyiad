@@ -280,7 +280,7 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                         <div>
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 block">Üyelik Türü</label>
                             <div className="font-semibold text-gray-700 text-sm">
-                                {member.membership_category === 'corporate' ? 'Kurumsal Üye' : 'Bireysel Üye'}
+                                {member.membership_category === 'corporate' ? 'Tüzel Üye' : 'Bireysel Üye'}
                             </div>
                         </div>
                         <div className="lg:border-l lg:border-gray-200 lg:pl-6">

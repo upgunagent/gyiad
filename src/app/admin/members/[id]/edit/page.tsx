@@ -572,7 +572,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                                     className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0099CC] bg-gray-50"
                                 >
                                     <option value="individual">Bireysel Üye</option>
-                                    <option value="corporate">Kurumsal Üye</option>
+                                    <option value="corporate">Tüzel Üye</option>
                                 </select>
                             </div>
                             <div>
