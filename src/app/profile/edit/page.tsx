@@ -29,8 +29,8 @@ export default function ProfileEditPage() {
     const [member, setMember] = useState<any>(null); // Start null to show loading/fetching
     const [isLoading, setIsLoading] = useState(true);
     const [userId, setUserId] = useState<string | null>(null);
-    const [kvkkText, setKvkkText] = useState('');
-    const [showKvkkModal, setShowKvkkModal] = useState(false);
+    const [kvkkTexts, setKvkkTexts] = useState({ membership: '', newsletter: '', photoSharing: '' });
+    const [activeModal, setActiveModal] = useState<'membership' | 'newsletter' | 'photoSharing' | null>(null);
     const projectsRef = useRef<HTMLTextAreaElement>(null);
 
     // Auto-resize textarea on load and value change
@@ -69,8 +69,12 @@ export default function ProfileEditPage() {
     }, []);
 
     const loadKvkkText = async () => {
-        const text = await memberService.getKvkkText();
-        setKvkkText(text || 'KVKK Metni yüklenemedi.');
+        try {
+            const texts = await memberService.getKvkkTexts();
+            setKvkkTexts(texts);
+        } catch (error) {
+            console.error('Failed to load KVKK texts', error);
+        }
     };
 
     const handleSave = async () => {
@@ -78,9 +82,8 @@ export default function ProfileEditPage() {
             alert("Lütfen önce Demo DB Hazırla butonuna basarak giriş yapınız.");
             return;
         }
-        if (!member.kvkk_consent) {
-            alert("Lütfen değişiklikleri kaydetmek için KVKK metnini onaylayınız.");
-            setShowKvkkModal(true);
+        if (!member.kvkk_membership_consent || !member.kvkk_newsletter_consent || !member.kvkk_photo_sharing_consent) {
+            alert("Lütfen değişiklikleri kaydetmek için tüm KVKK ve Açık Rıza metinlerini onaylayınız.");
             return;
         }
         setIsLoading(true);
@@ -106,7 +109,10 @@ export default function ProfileEditPage() {
                 linkedin_url: member.linkedin_url,
 
                 avatar_url: member.avatar_url,
-                kvkk_consent: member.kvkk_consent,
+                kvkk_membership_consent: member.kvkk_membership_consent,
+                kvkk_newsletter_consent: member.kvkk_newsletter_consent,
+                kvkk_photo_sharing_consent: member.kvkk_photo_sharing_consent,
+                kvkk_consent: true, // Legacy support
                 kvkk_consent_date: new Date().toISOString()
             });
             // Success
@@ -662,26 +668,74 @@ export default function ProfileEditPage() {
                     </div>
 
                     {/* KVKK Checkbox Area */}
-                    <div className="mx-6 mt-6 bg-white rounded-xl p-4 border border-gray-100 flex items-start gap-3">
-                        <div className="flex items-center h-5 mt-1">
-                            <input
-                                id="kvkk-consent"
-                                type="checkbox"
-                                checked={member.kvkk_consent || false}
-                                onChange={(e) => setMember({ ...member, kvkk_consent: e.target.checked })}
-                                className="w-5 h-5 text-[#0099CC] border-gray-300 rounded focus:ring-[#0099CC]"
-                            />
+                    <div className="mx-6 mt-6 space-y-4">
+                        {/* 1. Membership Consent */}
+                        <div className="bg-white rounded-xl p-4 border border-gray-100 flex items-start gap-3">
+                            <div className="flex items-center h-5 mt-1">
+                                <input
+                                    id="kvkk-membership"
+                                    type="checkbox"
+                                    checked={member.kvkk_membership_consent || false}
+                                    onChange={(e) => setMember({ ...member, kvkk_membership_consent: e.target.checked })}
+                                    className="w-5 h-5 text-[#0099CC] border-gray-300 rounded focus:ring-[#0099CC]"
+                                />
+                            </div>
+                            <div className="text-sm">
+                                <label htmlFor="kvkk-membership" className="font-medium text-gray-700 cursor-pointer select-none">
+                                    <span className="text-[#0099CC] font-bold hover:underline" onClick={(e) => {
+                                        e.preventDefault();
+                                        setActiveModal('membership');
+                                    }}>
+                                        1. GYİAD Dernek Vakıf Üyeliği Açık Rıza Metni'ni
+                                    </span> okudum ve kabul ediyorum. *
+                                </label>
+                            </div>
                         </div>
-                        <div className="text-sm">
-                            <label htmlFor="kvkk-consent" className="font-medium text-gray-700 cursor-pointer select-none">
-                                <span className="text-[#0099CC] font-bold hover:underline" onClick={(e) => {
-                                    e.preventDefault();
-                                    setShowKvkkModal(true);
-                                }}>
-                                    KVKK Aydınlatma Metni'ni
-                                </span> okudum ve kabul ediyorum.
-                            </label>
-                            <p className="text-gray-500 text-xs mt-1">Profilinizdeki değişiklikleri kaydedebilmeniz için bu metni onaylamanız gerekmektedir.</p>
+
+                        {/* 2. Newsletter Consent */}
+                        <div className="bg-white rounded-xl p-4 border border-gray-100 flex items-start gap-3">
+                            <div className="flex items-center h-5 mt-1">
+                                <input
+                                    id="kvkk-newsletter"
+                                    type="checkbox"
+                                    checked={member.kvkk_newsletter_consent || false}
+                                    onChange={(e) => setMember({ ...member, kvkk_newsletter_consent: e.target.checked })}
+                                    className="w-5 h-5 text-[#0099CC] border-gray-300 rounded focus:ring-[#0099CC]"
+                                />
+                            </div>
+                            <div className="text-sm">
+                                <label htmlFor="kvkk-newsletter" className="font-medium text-gray-700 cursor-pointer select-none">
+                                    <span className="text-[#0099CC] font-bold hover:underline" onClick={(e) => {
+                                        e.preventDefault();
+                                        setActiveModal('newsletter');
+                                    }}>
+                                        2. GYİAD E-Bülten Açık Rıza Metni'ni
+                                    </span> okudum ve kabul ediyorum. *
+                                </label>
+                            </div>
+                        </div>
+
+                        {/* 3. Photo Sharing Consent */}
+                        <div className="bg-white rounded-xl p-4 border border-gray-100 flex items-start gap-3">
+                            <div className="flex items-center h-5 mt-1">
+                                <input
+                                    id="kvkk-photo"
+                                    type="checkbox"
+                                    checked={member.kvkk_photo_sharing_consent || false}
+                                    onChange={(e) => setMember({ ...member, kvkk_photo_sharing_consent: e.target.checked })}
+                                    className="w-5 h-5 text-[#0099CC] border-gray-300 rounded focus:ring-[#0099CC]"
+                                />
+                            </div>
+                            <div className="text-sm">
+                                <label htmlFor="kvkk-photo" className="font-medium text-gray-700 cursor-pointer select-none">
+                                    <span className="text-[#0099CC] font-bold hover:underline" onClick={(e) => {
+                                        e.preventDefault();
+                                        setActiveModal('photoSharing');
+                                    }}>
+                                        3. GYİAD Fotoğraf Paylaşımı Açık Rıza Metni'ni
+                                    </span> okudum ve kabul ediyorum. *
+                                </label>
+                            </div>
                         </div>
                     </div>
 
@@ -689,35 +743,52 @@ export default function ProfileEditPage() {
             </main>
 
             {/* KVKK Modal */}
-            {showKvkkModal && (
+            {/* KVKK Modal */}
+            {activeModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[80vh] flex flex-col">
                         <div className="p-6 border-b border-gray-100 flex justify-between items-center">
                             <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                                 <ShieldCheck className="w-6 h-6 text-[#0099CC]" />
-                                KVKK Aydınlatma Metni
+                                {activeModal === 'membership' && 'GYİAD Dernek Vakıf Üyeliği Açık Rıza Metni'}
+                                {activeModal === 'newsletter' && 'GYİAD E-Bülten Açık Rıza Metni'}
+                                {activeModal === 'photoSharing' && 'GYİAD Fotoğraf Paylaşımı Açık Rıza Metni'}
                             </h3>
                             <button
-                                onClick={() => setShowKvkkModal(false)}
+                                onClick={() => setActiveModal(null)}
                                 className="p-2 hover:bg-gray-100 rounded-full transition-colors"
                             >
                                 <X className="w-5 h-5 text-gray-500" />
                             </button>
                         </div>
-                        <div className="p-6 overflow-y-auto max-h-[60vh] text-gray-600 whitespace-pre-wrap text-sm leading-relaxed">
-                            {kvkkText}
+                        <div className="p-6 overflow-y-auto max-h-[60vh] text-gray-600 text-sm leading-relaxed">
+                            {kvkkTexts[activeModal] ? (
+                                <div
+                                    className="prose prose-sm max-w-none whitespace-pre-wrap"
+                                    dangerouslySetInnerHTML={{ __html: kvkkTexts[activeModal] }}
+                                />
+                            ) : (
+                                <div className="text-center py-8 text-gray-500">
+                                    <p>Henüz metin içeriği eklenmemiştir.</p>
+                                    <p className="text-xs mt-2">Lütfen yönetici ile iletişime geçiniz.</p>
+                                </div>
+                            )}
                         </div>
                         <div className="p-6 border-t border-gray-100 flex justify-end gap-3 bg-gray-50 rounded-b-2xl">
                             <button
-                                onClick={() => setShowKvkkModal(false)}
+                                onClick={() => setActiveModal(null)}
                                 className="px-5 py-2.5 text-gray-700 font-medium hover:bg-gray-200 rounded-lg transition-colors"
                             >
                                 Kapat
                             </button>
                             <button
                                 onClick={() => {
-                                    setMember({ ...member, kvkk_consent: true });
-                                    setShowKvkkModal(false);
+                                    const key = activeModal === 'membership' ? 'kvkk_membership_consent'
+                                        : activeModal === 'newsletter' ? 'kvkk_newsletter_consent'
+                                            : 'kvkk_photo_sharing_consent';
+
+                                    setMember({ ...member, [key]: true });
+                                    setActiveModal(null);
                                 }}
                                 className="px-5 py-2.5 bg-[#0099CC] text-white font-medium hover:bg-[#007aa3] rounded-lg transition-colors shadow-sm"
                             >

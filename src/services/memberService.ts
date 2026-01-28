@@ -45,6 +45,9 @@ export type DbMember = {
     phone?: string; // Admin-only phone number
     kvkk_consent?: boolean;
     kvkk_consent_date?: string;
+    kvkk_membership_consent?: boolean;
+    kvkk_newsletter_consent?: boolean;
+    kvkk_photo_sharing_consent?: boolean;
     // ... other fields
 };
 
@@ -129,29 +132,50 @@ export const memberService = {
         return publicUrl;
     },
 
-    async getKvkkText() {
-        // Fetch from system_settings via API or direct DB if possible (but API is safer for separation)
-        // Since we are in service, we might call the API we are about to create, OR direct DB if client-side safe.
-        // Let's use direct DB for simple read if RLS allows public read.
+    async getKvkkTexts() {
+        const keys = [
+            'kvkk_membership_consent_text',
+            'kvkk_newsletter_consent_text',
+            'kvkk_photo_sharing_consent_text'
+        ];
+
         const { data, error } = await supabase
             .from('system_settings')
-            .select('value')
-            .eq('key', 'kvkk_text')
-            .single();
-
-        if (error) return null;
-        return data?.value || '';
-    },
-
-    async updateKvkkText(text: string) {
-        const { error } = await supabase
-            .from('system_settings')
-            .upsert({ key: 'kvkk_text', value: text })
-            .select() // Return updated data
-            .single();
+            .select('key, value')
+            .in('key', keys);
 
         if (error) {
-            console.error('Error updating KVKK text:', error);
+            console.error('Error fetching KVKK texts:', error);
+            return {
+                membership: '',
+                newsletter: '',
+                photoSharing: ''
+            };
+        }
+
+        // Map array to object
+        const result = {
+            membership: data?.find(item => item.key === 'kvkk_membership_consent_text')?.value || '',
+            newsletter: data?.find(item => item.key === 'kvkk_newsletter_consent_text')?.value || '',
+            photoSharing: data?.find(item => item.key === 'kvkk_photo_sharing_consent_text')?.value || ''
+        };
+
+        return result;
+    },
+
+    async updateKvkkTexts(texts: { membership: string, newsletter: string, photoSharing: string }) {
+        const updates = [
+            { key: 'kvkk_membership_consent_text', value: texts.membership },
+            { key: 'kvkk_newsletter_consent_text', value: texts.newsletter },
+            { key: 'kvkk_photo_sharing_consent_text', value: texts.photoSharing }
+        ];
+
+        const { error } = await supabase
+            .from('system_settings')
+            .upsert(updates);
+
+        if (error) {
+            console.error('Error updating KVKK texts:', error);
             throw new Error(error.message);
         }
         return { success: true };

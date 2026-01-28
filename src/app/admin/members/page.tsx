@@ -451,12 +451,12 @@ export default function AdminMembersPage() {
                                             </div>
                                         </td>
                                         <td className="px-6 py-4 text-center">
-                                            {member.kvkk_consent ? (
-                                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600">
+                                            {(member.kvkk_membership_consent && member.kvkk_newsletter_consent && member.kvkk_photo_sharing_consent) ? (
+                                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-green-100 text-green-600" title="Tüm onaylar verildi">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                                                 </div>
                                             ) : (
-                                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600">
+                                                <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-red-100 text-red-600" title="Eksik onaylar mevcut">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                                                 </div>
                                             )}
