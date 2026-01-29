@@ -163,7 +163,7 @@ function Dashboard() {
                 <MemberCard
                   key={member.id}
                   id={member.id}
-                  name={member.full_name}
+                  name={member.full_name || ''}
                   company={member.company_name}
                   // Primary Role Display Logic
                   role={formatPrimaryRole(member.board_roles, member.member_type)}

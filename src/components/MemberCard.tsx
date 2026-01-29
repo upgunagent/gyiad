@@ -26,21 +26,21 @@ export default function MemberCard({ id, name, company, avatarUrl, role, cardRol
                     {avatarUrl ? (
                         <Image
                             src={avatarUrl}
-                            alt={name}
+                            alt={name || 'Üye'}
                             fill
                             className="object-cover"
                         />
                     ) : (
                         <div className="w-full h-full flex items-center justify-center text-4xl font-bold text-gray-300">
-                            {name.charAt(0)}
+                            {(name && name.length > 0) ? name.charAt(0).toUpperCase() : '?'}
                         </div>
                     )}
                 </div>
 
                 {/* Info */}
                 <div className="space-y-1">
-                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-gyiad-blue transition-colors line-clamp-1" title={name}>
-                        {name}
+                    <h3 className="text-lg font-bold text-gray-800 group-hover:text-gyiad-blue transition-colors line-clamp-1" title={name || ''}>
+                        {name || 'İsimsiz Üye'}
                     </h3>
                     <p className="text-sm font-medium text-gray-500 line-clamp-2 min-h-[2.5rem]" title={company}>
                         {company}
