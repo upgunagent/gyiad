@@ -53,6 +53,14 @@ export default function NewMemberPage() {
         setIsLoading(true);
         setMessage(null);
 
+        // Validation
+        if (!formData.full_name || !formData.email || !formData.phone) {
+            setMessage({ text: 'Lütfen zorunlu alanları (Ad Soyad, E-Posta, Telefon) doldurunuz.', type: 'error' });
+            setIsLoading(false);
+            window.scrollTo(0, 0);
+            return;
+        }
+
         // Sanitize data
         const dataToSend = {
             ...formData,
@@ -168,7 +176,7 @@ export default function NewMemberPage() {
                         <h2 className="text-lg font-semibold text-gray-900 mb-4 border-b pb-2">Hesap Bilgileri</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Ad Soyad</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Ad Soyad <span className="text-red-500">*</span></label>
                                 <input
                                     required
                                     value={formData.full_name}
@@ -177,7 +185,7 @@ export default function NewMemberPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">E-Posta</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">E-Posta <span className="text-red-500">*</span></label>
                                 <input
                                     type="email"
                                     required
@@ -187,7 +195,7 @@ export default function NewMemberPage() {
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon Numarası</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Telefon Numarası <span className="text-red-500">*</span></label>
                                 <input
                                     required
                                     value={formData.phone}
