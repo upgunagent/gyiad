@@ -14,8 +14,26 @@ export async function POST(request: Request) {
     try {
         const { email } = await request.json();
 
+
         if (!email) {
             return NextResponse.json({ error: 'E-posta adresi gerekli' }, { status: 400 });
+        }
+
+        // 1. Check if the user exists in our 'members' table
+        // This prevents sending reset links to non-members
+        const { data: member, error: memberError } = await supabaseAdmin
+            .from('members')
+            .select('id, email')
+            .eq('email', email)
+            .single();
+
+        if (memberError || !member) {
+            // Security: We can either return a generic message or a specific error.
+            // The user explicitly requested "User not found" warning.
+            return NextResponse.json(
+                { error: 'Bu e-posta adresi ile kayıtlı bir kullanıcı bulunamadı.' },
+                { status: 404 }
+            );
         }
 
         // Generate password reset link using Supabase Admin API
