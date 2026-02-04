@@ -48,6 +48,7 @@ export type DbMember = {
     kvkk_membership_consent?: boolean;
     kvkk_newsletter_consent?: boolean;
     kvkk_photo_sharing_consent?: boolean;
+    is_hidden?: boolean; // Hidden member flag
     // ... other fields
 };
 

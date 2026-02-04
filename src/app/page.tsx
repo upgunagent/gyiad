@@ -36,8 +36,8 @@ function Dashboard() {
   useEffect(() => {
     if (!allMembers.length) return;
 
-    // Filter out 'left' members AND 'is_admin' members (Super Admin)
-    let result = allMembers.filter(m => m.member_type !== 'left' && !m.is_admin);
+    // Filter out 'left' members AND 'is_admin' members (Super Admin) AND 'is_hidden' members
+    let result = allMembers.filter(m => m.member_type !== 'left' && !m.is_admin && !m.is_hidden);
 
     // SECTOR FILTER LOGIC
     const sectorFilter = searchParams.get('sector');

@@ -36,10 +36,11 @@ export async function POST(request: Request) {
             education,
             languages,
             other_memberships,
-            gyiad_projects
+            gyiad_projects,
+            is_hidden
         } = body;
 
-        console.log("Create Member Request:", { email, full_name, board_roles, card_role });
+        console.log("Create Member Request:", { email, full_name, board_roles, card_role, is_hidden });
 
         const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!";
 
@@ -70,6 +71,7 @@ export async function POST(request: Request) {
                 membership_end_date: membership_end_date || null,
                 board_roles: Array.isArray(board_roles) ? board_roles : [],
                 is_admin: false,
+                is_hidden: is_hidden || false,
                 // New Fields Mapped
                 company_name: company_name || null,
                 company_address: company_address || null,

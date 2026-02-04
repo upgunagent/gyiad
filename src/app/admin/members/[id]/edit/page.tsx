@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { Loader2, Save, Plus, Trash2, Building2, User, Globe, ArrowLeft, Camera, Pencil } from 'lucide-react';
+import { Loader2, Save, Plus, Trash2, Building2, User, Globe, ArrowLeft, Camera, Pencil, EyeOff } from 'lucide-react';
 import { sectors } from '@/data/sectors';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -24,6 +24,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
         membership_end_date: '',
         board_roles: [] as string[],
         card_role: '',
+        is_hidden: false,
         company_name: '',
         company_address: '',
         position: '',
@@ -73,6 +74,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                     membership_end_date: data.membership_end_date || '',
                     board_roles: data.board_roles || [],
                     card_role: data.card_role || '',
+                    is_hidden: data.is_hidden || false,
                     company_name: data.company_name || '',
                     company_address: data.company_address || '',
                     position: data.position || '',
@@ -239,6 +241,28 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                                 />
                             </label>
                         </div>
+                    </div>
+
+                    {/* Gizli Üye Checkbox */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <div className="p-2 bg-gray-200 rounded-full text-gray-700">
+                                <EyeOff className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <h3 className="text-sm font-semibold text-gray-900">Üyeyi Listelerde Gizle</h3>
+                                <p className="text-xs text-gray-500">Bu seçenek işaretlendiğinde, üye listelerde ve arama sonuçlarında görünmez ancak panele erişebilir.</p>
+                            </div>
+                        </div>
+                        <label className="relative inline-flex items-center cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={formData.is_hidden}
+                                onChange={(e) => setFormData({ ...formData, is_hidden: e.target.checked })}
+                                className="sr-only peer"
+                            />
+                            <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#0099CC]"></div>
+                        </label>
                     </div>
 
                     {/* 1. Temel Hesap Bilgileri */}

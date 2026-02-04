@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Plus, Pencil, Trash2, Search, RefreshCw, Eye, Download } from 'lucide-react';
+import { Plus, Pencil, Trash2, Search, RefreshCw, Eye, Download, EyeOff } from 'lucide-react';
 import { memberService, DbMember } from '@/services/memberService';
 import { useRouter } from 'next/navigation';
 import * as ExcelJS from 'exceljs';
@@ -421,13 +421,20 @@ export default function AdminMembersPage() {
                                     <tr key={member.id} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="flex items-center gap-3">
-                                                {member.avatar_url ? (
-                                                    <img src={member.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
-                                                ) : (
-                                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-medium">
-                                                        {member.full_name?.charAt(0)}
-                                                    </div>
-                                                )}
+                                                <div className="relative">
+                                                    {member.avatar_url ? (
+                                                        <img src={member.avatar_url} alt="" className="w-10 h-10 rounded-full object-cover" />
+                                                    ) : (
+                                                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 font-medium">
+                                                            {member.full_name?.charAt(0)}
+                                                        </div>
+                                                    )}
+                                                    {member.is_hidden && (
+                                                        <div className="absolute -top-1 -right-1 bg-gray-800 text-white rounded-full p-0.5 shadow-sm border border-white" title="Gizli Üye">
+                                                            <EyeOff className="w-3 h-3" />
+                                                        </div>
+                                                    )}
+                                                </div>
                                                 <div>
                                                     <div className="font-semibold text-gray-900">{member.full_name}</div>
                                                     <div className="text-sm text-gray-500">{member.email}</div>

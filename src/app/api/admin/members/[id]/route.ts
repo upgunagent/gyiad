@@ -45,7 +45,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
         const body = await req.json();
         const { id } = await getParams(params);
 
-        const { board_roles, membership_start_date, membership_status, email, ...profileUpdates } = body;
+        const { board_roles, membership_start_date, membership_status, email, is_hidden, ...profileUpdates } = body;
 
         // 1. Update Supabase Auth Email if provided
         if (email) {
@@ -69,10 +69,12 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
             email: email, // Update email in profile as well
             board_roles: Array.isArray(board_roles) ? board_roles : [],
             birth_date: profileUpdates.birth_date === '' ? null : profileUpdates.birth_date,
+            gender: profileUpdates.gender === '' ? null : profileUpdates.gender, // Fix constraint violation
             membership_date: (membership_start_date === '' ? null : membership_start_date) || (profileUpdates.membership_date === '' ? null : profileUpdates.membership_date),
             membership_end_date: profileUpdates.membership_end_date === '' ? null : profileUpdates.membership_end_date,
             company_turnover: profileUpdates.company_turnover || null,
             number_of_employees: profileUpdates.number_of_employees || null,
+            is_hidden: is_hidden, // Explicitly update is_hidden
             member_type: membership_status // Map frontend status to DB field
         };
 
