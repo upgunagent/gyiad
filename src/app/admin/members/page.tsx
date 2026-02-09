@@ -104,7 +104,7 @@ export default function AdminMembersPage() {
                 m.email,
                 m.phone,
                 m.birth_date,
-                m.marital_status === 'single' ? 'Bekar' : 'Evli',
+                m.marital_status === 'single' ? 'Bekar' : m.marital_status === 'married' ? 'Evli' : '-',
                 m.gender === 'male' ? 'Erkek' : m.gender === 'female' ? 'Kadın' : '',
                 m.education?.map((e: any) => e.school).join(', '),
                 m.languages?.join(', '),

@@ -252,7 +252,7 @@ export default function MemberProfileView({ member, backLink, backText, sidebar,
                             </div>
                             <div>
                                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Medeni Durum</label>
-                                <div className="font-medium text-gray-900 text-sm capitalize">{member.marital_status === 'married' ? 'Evli' : 'Bekar'}</div>
+                                <div className="font-medium text-gray-900 text-sm capitalize">{member.marital_status === 'married' ? 'Evli' : member.marital_status === 'single' ? 'Bekar' : '-'}</div>
                             </div>
                             <div>
                                 <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Cinsiyet</label>

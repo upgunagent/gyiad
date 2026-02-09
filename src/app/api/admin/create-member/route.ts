@@ -78,7 +78,7 @@ export async function POST(request: Request) {
                 position: position || null,
                 sector: sector || null,
                 birth_date: birth_date || null,
-                marital_status: marital_status || 'single',
+                marital_status: marital_status || null,
                 gender: gender || null,
                 linkedin_url: linkedin_url || null,
                 websites: Array.isArray(websites) ? websites.filter(Boolean) : [],

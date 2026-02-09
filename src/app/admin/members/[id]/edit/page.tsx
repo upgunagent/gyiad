@@ -31,7 +31,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
         sector: '',
         business_area: '',
         birth_date: '',
-        marital_status: 'single',
+        marital_status: '',
         gender: '',
         linkedin_url: '',
         websites: [''],
@@ -81,7 +81,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                     sector: data.sector || '',
                     business_area: data.business_area || '',
                     birth_date: data.birth_date || '',
-                    marital_status: data.marital_status || 'single',
+                    marital_status: data.marital_status || '',
                     gender: data.gender || '',
                     linkedin_url: data.linkedin_url || '',
                     websites: (data.websites && data.websites.length > 0) ? data.websites : [''],
@@ -134,6 +134,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
 
         const dataToSend = {
             ...formData,
+            marital_status: formData.marital_status || null,
             ...(avatarUrl && { avatar_url: avatarUrl }),
             websites: formData.websites.filter(w => w.trim() !== ''),
         };
@@ -415,6 +416,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                                     onChange={e => setFormData({ ...formData, marital_status: e.target.value })}
                                     className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#0099CC] bg-gray-50"
                                 >
+                                    <option value="">Seçiniz</option>
                                     <option value="single">Bekar</option>
                                     <option value="married">Evli</option>
                                 </select>

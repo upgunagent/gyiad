@@ -53,19 +53,6 @@ function Dashboard() {
 
 
 
-    // GLOBAL SEARCH LOGIC
-    const searchTerm = searchParams.get('search');
-    if (searchTerm) {
-      const lowerTerm = searchTerm.toLowerCase();
-      // If we have a search term, we search EVERYONE (except 'left') matching the name
-      // ignoring the current tab/filter category
-      result = result.filter(m => m.full_name.toLowerCase().includes(lowerTerm));
-
-      // We stop here to show ALL results across the database (as loaded in allMembers)
-      setFilteredMembers(result);
-      return;
-    }
-
     // Logic based on User Rules
     // board_roles is an array of strings
 
@@ -120,6 +107,13 @@ function Dashboard() {
         // Default handling? Maybe show all active?
         // result = result; 
         break;
+    }
+
+    // SCOPED SEARCH LOGIC (Moved here so it respects the filter above)
+    const searchTerm = searchParams.get('search');
+    if (searchTerm) {
+      const lowerTerm = searchTerm.toLowerCase();
+      result = result.filter(m => m.full_name.toLowerCase().includes(lowerTerm));
     }
 
     setFilteredMembers(result);

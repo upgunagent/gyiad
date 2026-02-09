@@ -101,7 +101,7 @@ export default function ProfileEditPage() {
                 websites: member.websites ? member.websites.filter((w: string) => w.trim() !== '') : [],
                 email: member.email,
                 birth_date: member.birth_date,
-                marital_status: member.marital_status || 'single',
+                marital_status: member.marital_status || null,
                 gender: member.gender,
                 languages: member.languages,
                 other_memberships: member.other_memberships,
@@ -388,9 +388,10 @@ export default function ProfileEditPage() {
                                         <label className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1 block">Medeni Durum</label>
                                         <select
                                             value={member.marital_status}
-                                            onChange={(e) => setMember({ ...member, marital_status: e.target.value as 'married' | 'single' })}
+                                            onChange={(e) => setMember({ ...member, marital_status: e.target.value as 'married' | 'single' | '' })}
                                             className="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#0099CC]/20 focus:border-[#0099CC] bg-white"
                                         >
+                                            <option value="">Seçiniz</option>
                                             <option value="married">Evli</option>
                                             <option value="single">Bekar</option>
                                         </select>
