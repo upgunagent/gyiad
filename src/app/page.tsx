@@ -112,8 +112,8 @@ function Dashboard() {
     // SCOPED SEARCH LOGIC (Moved here so it respects the filter above)
     const searchTerm = searchParams.get('search');
     if (searchTerm) {
-      const lowerTerm = searchTerm.toLowerCase();
-      result = result.filter(m => m.full_name.toLowerCase().includes(lowerTerm));
+      const lowerTerm = searchTerm.toLocaleLowerCase('tr-TR');
+      result = result.filter(m => (m.full_name || '').toLocaleLowerCase('tr-TR').includes(lowerTerm));
     }
 
     setFilteredMembers(result);

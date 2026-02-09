@@ -189,8 +189,8 @@ export default function AdminMembersPage() {
 
     const filteredMembers = members.filter(m => {
         // Search filter
-        const matchesSearch = m.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            m.company_name?.toLowerCase().includes(searchTerm.toLowerCase());
+        const matchesSearch = (m.full_name || '').toLocaleLowerCase('tr-TR').includes(searchTerm.toLocaleLowerCase('tr-TR')) ||
+            (m.company_name || '').toLocaleLowerCase('tr-TR').includes(searchTerm.toLocaleLowerCase('tr-TR'));
 
         // Status filter
         const matchesStatus = statusFilter === 'all' || m.member_type === statusFilter;
