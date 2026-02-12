@@ -117,7 +117,7 @@ export async function POST(request: Request) {
                     <div style="background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px;">
                         <h2 style="color: #0099CC; margin-top: 0;">GYİAD Üyeliğiniz Oluşturuldu</h2>
                         
-                        <p>Giyad tarafından Üye kaydınız gerçekleşti.</p>
+                        <p>GYİAD tarafından Üye kaydınız gerçekleşti.</p>
                         
                         <p>Lütfen aşağıdaki kullanıcı adı ve şifreniz ile giriş yapıp profil bilgilerinizi tamamlayınız ve şifrenizi güncelleyiniz.</p>
                         
@@ -138,6 +138,12 @@ export async function POST(request: Request) {
                         <p style="color: #999; font-size: 12px; text-align: center;">
                             © ${new Date().getFullYear()} GYİAD - Tüm hakları saklıdır.<br>
                             Bu otomatik bir e-postadır, lütfen yanıtlamayın.
+                        </p>
+                        <p style="color: #999; font-size: 12px; text-align: center; margin-top: 10px;">
+                            Esentepe Mahallesi Büyükdere Caddesi<br>
+                            Assembly Ferko Signature Binası No.175 Ofis No: 14<br>
+                            Şişli, Levent/İstanbul<br>
+                            Tel:  0 212 356 94 06
                         </p>
                     </div>
                 </body>
